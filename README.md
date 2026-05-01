@@ -143,4 +143,68 @@ During each epoch:
 The console output shows:
 - **Epoch number** - Current training iteration
 - **Loss** - Error metric (lower is better)
+
+### Making Predictions
+
+After training, the model can classify new users:
+
+```javascript
+async function predict(model, personTensor) {
+  const tfInput = tf.tensor2d(personTensor);
+  const prediction = await model.predict(tfInput).array();
+  return prediction[0].map((prob, index) => ({ prob, index }));
+}
+```
+
+**Example: Classifying a New User (Igor)**
+
+**User Profile:**
+- Name: Igor
+- Age: 30
+- Color: Green
+- Location: São Paulo
+
+**Tensor Representation:**
+```javascript
+const newPersonTensor = [
+  [
+    0.2,  // normalized age (30 years old)
+    0,    // blue (not selected)
+    0,    // red (not selected)
+    1,    // green (selected)
+    1,    // São Paulo (selected)
+    0,    // Rio (not selected)
+    0,    // Curitiba (not selected)
+  ],
+];
+```
+
+**Prediction Process:**
+1. The `predict` function converts the input into a tensor
+2. The model processes it through the neural network
+3. Returns probability scores for each category
+4. Results are sorted by probability (highest first)
+5. Formatted as percentages for readability
+
+**Output Example:**
+```
+[
+  "premium: 45.23%",
+  "medium: 32.15%",
+  "basic: 22.62%"
+]
+```
+
+The model predicts Igor is most likely a **Premium** user (45.23% confidence) based on his profile features.
+
+## 🎯 Learning Outcomes
+
+This project demonstrates:
+- How to prepare data for neural networks (normalization and encoding)
+- Building a simple feedforward neural network
+- Understanding activation functions (ReLU and Softmax)
+- Training a classification model
+- Monitoring training progress with callbacks
+- Making predictions on new data using a trained model
+- Interpreting probability outputs from neural networks
 - **Accuracy** - Percentage of correct predictions (higher is better)
